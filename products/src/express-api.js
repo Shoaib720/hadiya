@@ -1,4 +1,5 @@
 import express from 'express';
+import product from './api/product.api.js'
 
 export function expressApp(app) {
   
@@ -9,5 +10,7 @@ export function expressApp(app) {
       message: 'Products service is up and running'
     });
   });
+
+  product(app);
 
 }

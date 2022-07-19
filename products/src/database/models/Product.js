@@ -1,9 +1,10 @@
 import { DataTypes } from 'sequelize';
+import { v4, validate } from 'uuid';
 import { sequelize } from '../index.js'
 
-export const Procuct = sequelize.define('Product', {
+export const Product = sequelize.define('Product', {
   id: {
-    type: DataTypes.UUIDV4,
+    type: DataTypes.UUID,
     unique: true,
     allowNull: false,
     primaryKey: true
@@ -20,6 +21,17 @@ export const Procuct = sequelize.define('Product', {
     type: DataTypes.STRING(5),
     allowNull: false
   },
-  createdOn: DataTypes.DATE,
-  updatedOn: DataTypes.DATE
+  createdAt: DataTypes.DATE,
+  updatedAt: DataTypes.DATE
 });
+
+export async function insertProduct (productData) {
+  productData.id = v4();
+  productData.createdOn = new Date();
+  productData.updatedOn = new Date();
+  await Product.create(productData);
+}
+
+export async function fetchAllProducts () {
+  return await Product.findAll();
+}
