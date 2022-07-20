@@ -1,15 +1,21 @@
 import express from 'express';
-import { expressApp } from './express-api.js'
-import { PORT} from './config/index.js';
+import { Kafka } from 'kafkajs';
+import { expressApp } from './express-app.js'
+import { PORT, KAFKA_URL, KAFKA_CLIENT_ID } from './config/index.js';
 import { sequelize } from './database/index.js'
 
-function StartServer() {
+async function StartServer() {
 
   const app = express();
 
-  sequelize.sync();
+  const producer = await createProducer();
 
-  expressApp(app);
+  sequelize.sync({
+    force: false,
+    alter: false
+  });
+
+  expressApp(app, producer);
 
   app.listen(PORT, () => {
     console.log(`Server is listening on ${PORT}`);
@@ -17,4 +23,15 @@ function StartServer() {
 
 }
 
-StartServer();
+async function createProducer() {
+  const kafka = new Kafka({
+    clientId: KAFKA_CLIENT_ID,
+    brokers: [KAFKA_URL]
+  });
+  console.log(kafka);
+  return kafka.producer({
+      allowAutoTopicCreation: true
+  });
+}
+
+await StartServer();

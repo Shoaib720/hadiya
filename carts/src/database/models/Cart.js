@@ -1,18 +1,18 @@
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../index.js'
+import { sequelize } from '../index.js';
 
-export const Product = sequelize.define('Product', {
+export const Cart = sequelize.define('Cart', {
   id: {
     type: DataTypes.UUID,
     unique: true,
     allowNull: false,
     primaryKey: true
   },
-  name: {
-    type: DataTypes.STRING(60),
+  customerId: {
+    type: DataTypes.UUID,
     allowNull: false,
   },
-  price: {
+  subTotal: {
     type: DataTypes.DECIMAL(2),
     allowNull: false
   },

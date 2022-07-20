@@ -1,7 +1,7 @@
 import express from 'express';
-import product from './api/product.api.js'
+import { ProductAPI } from './api/index.js'
 
-export function expressApp(app) {
+export function expressApp(app, producer) {
   
   app.use(express.json());
 
@@ -11,6 +11,6 @@ export function expressApp(app) {
     });
   });
 
-  product(app);
+  ProductAPI(app, producer);
 
 }

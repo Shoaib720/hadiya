@@ -1,6 +1,2 @@
-import { AddProduct, GetProducts } from './product.service.js'
-
-export {
-    AddProduct,
-    GetProducts
-}
+export { ProductService } from './product.service.js';
+export { KafkaService } from './kafka.service.js';
