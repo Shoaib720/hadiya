@@ -13,13 +13,11 @@ export const Product = sequelize.define('Product', {
     allowNull: false,
   },
   price: {
-    type: DataTypes.DECIMAL(2),
+    type: DataTypes.DECIMAL(5),
     allowNull: false
   },
   currency: {
     type: DataTypes.STRING(5),
     allowNull: false
-  },
-  createdAt: DataTypes.DATE,
-  updatedAt: DataTypes.DATE
+  }
 });

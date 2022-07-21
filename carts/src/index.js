@@ -26,7 +26,7 @@ async function StartServer(consumer) {
   })
 
   sequelize.sync({
-    force: true,
+    force: false,
     alter: false
   });
   
