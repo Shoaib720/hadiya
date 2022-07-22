@@ -1,14 +1,15 @@
 import express from 'express';
-import { Kafka } from 'kafkajs';
+// import { Kafka } from 'kafkajs';
+import { ServiceBusClient } from '@azure/service-bus';
 import { expressApp } from './express-app.js'
-import { PORT, KAFKA_URL, KAFKA_CLIENT_ID } from './config/index.js';
+import { PORT, SERVICE_BUS_CONNECTION_STRING, SERVICE_BUS_QUEUE_NAME } from './config/index.js';
 import { sequelize } from './database/index.js'
 
 async function StartServer() {
 
   const app = express();
 
-  const producer = await createProducer();
+  const producer = await createSender();
 
   sequelize.sync({
     force: false,
@@ -23,15 +24,9 @@ async function StartServer() {
 
 }
 
-async function createProducer() {
-  const kafka = new Kafka({
-    clientId: KAFKA_CLIENT_ID,
-    brokers: [KAFKA_URL]
-  });
-  console.log(kafka);
-  return kafka.producer({
-      allowAutoTopicCreation: true
-  });
+async function createSender(){
+  const serviceBusClient = new ServiceBusClient(SERVICE_BUS_CONNECTION_STRING);
+  return serviceBusClient.createSender(SERVICE_BUS_QUEUE_NAME);
 }
 
 await StartServer();

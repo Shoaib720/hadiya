@@ -1,5 +1,5 @@
 import { ProductRepository } from '../database/index.js'
-import { KafkaService } from './kafka.service.js';
+import { QueueService } from './queue.service.js';
 import { KAFKA_PRODUCT_CART_TOPIC_NAME } from '../config/index.js';
 
 export const Events = {
@@ -9,7 +9,7 @@ export const Events = {
 export class ProductService {
 
     constructor(producer) {
-        this.kafkaService = new KafkaService(producer);
+        this.queueService = new QueueService(producer);
         this.repository = new ProductRepository();
     }
 
@@ -28,7 +28,7 @@ export class ProductService {
             event: Events.ADD_TO_CART,
             data: data
         }
-        this.kafkaService.SendMessage(KAFKA_PRODUCT_CART_TOPIC_NAME, payload);
+        this.queueService.SendMessage(payload);
     }
 
 }

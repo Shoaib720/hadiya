@@ -19,10 +19,10 @@ export class CartItemService {
     }
 
     async SubscribeEvents(payload) {
-        const { event, data } = payload;
+        const { event, data } = JSON.parse(payload);
         switch(event) {
             case Events.ADD_TO_CART:
-                this.AddCartItem(data);
+                await this.AddCartItem(data);
                 break;
             default:
                 break;

@@ -1,7 +1,7 @@
 import express from 'express';
-import { Kafka } from 'kafkajs';
+import { ServiceBusClient } from '@azure/service-bus';
 import { expressApp } from './express-api.js'
-import { PORT} from './config/index.js';
+import { PORT, SERVICE_BUS_CONNECTION_STRING, SERVICE_BUS_QUEUE_NAME } from './config/index.js';
 import { sequelize } from './database/index.js'
 import { CartItemService } from './services/cartitem.service.js'
 // import { KafkaService } from './services/kafka.service.js';
@@ -10,20 +10,12 @@ import { CartItemService } from './services/cartitem.service.js'
 async function StartServer(consumer) {
 
   const app = express();
+  
 
-  const cartItemService = new CartItemService();
-
-  await consumer.connect();
-
-  await consumer.subscribe({
-    topic: 'product_cart'
-  })
-
-  await consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
-      cartItemService.SubscribeEvents(JSON.parse(message.value));
-    },
-  })
+  consumer.subscribe({
+		processMessage: serviceBusMessageHandler,
+		processError: serviceBusMessageErrorHandler
+	});
 
   sequelize.sync({
     force: false,
@@ -39,15 +31,19 @@ async function StartServer(consumer) {
 
 }
 
-async function createConsumer() {
-  const kafka = new Kafka({
-    clientId: 'cart_consumer',
-    brokers: ['kafka:9092']
-  });
+const serviceBusMessageErrorHandler = async (error) => {
+  console.log(error);
+};
 
-  return kafka.consumer({
-    groupId: 'test'
-  });
+const serviceBusMessageHandler = async (messageReceived) => {
+  console.log(`Received message: ${messageReceived.body}`);
+  const cartItemService = new CartItemService();
+  await cartItemService.SubscribeEvents(messageReceived.body);
+};
+
+async function createConsumer() {
+  const serviceBusClient = new ServiceBusClient(SERVICE_BUS_CONNECTION_STRING);
+  return serviceBusClient.createReceiver(SERVICE_BUS_QUEUE_NAME);
 }
 
 const consumer = await createConsumer();

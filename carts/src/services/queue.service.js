@@ -1,7 +1,6 @@
-import { KafkaClient, Consumer } from 'kafka-node';
-import { KAFKA_URL, KAFKA_CART_TOPIC_NAME } from '../config/index.js';
+// import { KAFKA_URL, KAFKA_CART_TOPIC_NAME } from '../config/index.js';
 
-export class KafkaService{
+export class QueueService{
 
     constructor() {
         this.client = new KafkaClient({

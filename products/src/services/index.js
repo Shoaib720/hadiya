@@ -1,2 +1,2 @@
 export { ProductService } from './product.service.js';
-export { KafkaService } from './kafka.service.js';
+export { QueueService } from './queue.service.js';
