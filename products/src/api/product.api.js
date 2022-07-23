@@ -1,8 +1,11 @@
 import { ProductService } from '../services/index.js';
 
-export async function ProductAPI (app, producer) {
+const SuccessCode = {
+    'OK': 200,
+    'CREATED': 201
+}
 
-    console.log(producer);
+export async function ProductAPI (app, producer) {
 
     const productService = new ProductService(producer);
 
@@ -14,11 +17,12 @@ export async function ProductAPI (app, producer) {
                 currency: req.body.currency
             }
             await productService.AddProduct(productData);
-            res.status(201).send({
+            res.status(SuccessCode.CREATED).send({
                 message: "Product added successfully"
             })
         }
         catch(err) {
+            // handle
             next(err);
         }
         
@@ -26,15 +30,54 @@ export async function ProductAPI (app, producer) {
 
     app.get('/products', async (req, res, next) => {
         try{
-            const products = await productService.GetProducts();
-            res.status(200).json({
-                message: "Success",
-                data: products
+
+            if(req.query.id){
+                const product = await productService.GetProductById(req.query.id);
+                res.status(SuccessCode.OK).json({
+                    message: "Success",
+                    data: product
+                });
+            }
+            else{
+                const products = await productService.GetProducts();
+                res.status(SuccessCode.OK).json({
+                    message: "Success",
+                    data: products
+                })
+            }
+        }
+        catch(err){
+            next(err);
+        }
+    });
+
+    app.put('/products', async (req, res, next) => {
+        try{
+            const data = {
+                id: req.query.id,
+                name: req.body.name,
+                price: req.body.price,
+                currency: req.body.currency
+            }
+            await productService.UpdateProduct(data);
+            res.status(SuccessCode.OK).json({
+                message: "Record updated successfully"
+            });
+        }
+        catch(err){
+            next(err);
+        }
+    })
+
+    app.delete('/products', async (req, res, next) => {
+        try{
+            await productService.DeleteProduct(req.query.id);
+            res.status(SuccessCode.OK).json({
+                message: "Record deleted successfully"
             })
         }
         catch(err){
-            console.log(err);
-            res.status(500).send("Error")
+            next(err);
         }
     })
 
@@ -46,10 +89,11 @@ export async function ProductAPI (app, producer) {
                 quantity: req.body.quantity
             }
             await productService.AddToCart(payload);
-            res.status(200).json(payload);
+            res.status(SuccessCode.OK).json(payload);
         }
         catch(err) {
-            console.log(err);
+            // handle
+            next(err);
         }
 
     })

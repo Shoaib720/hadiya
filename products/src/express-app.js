@@ -1,5 +1,6 @@
 import express from 'express';
 import { ProductAPI } from './api/index.js'
+import { LogHandler, ErrorHandler } from './middlewares/index.js';
 
 export function expressApp(app, producer) {
   
@@ -12,5 +13,8 @@ export function expressApp(app, producer) {
   });
 
   ProductAPI(app, producer);
+
+  app.use(LogHandler);
+  app.use(ErrorHandler);
 
 }
