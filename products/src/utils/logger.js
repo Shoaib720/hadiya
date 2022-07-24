@@ -1,18 +1,45 @@
-import { createLogger, transports } from 'winston';
+import { createLogger, transports, format } from 'winston';
 import { AppError } from './errors/app.error.js';
+import { Formatter } from './formatter.js';
 
-const LogError = createLogger({
+export const Logger = createLogger({
+    level: 'info',
+    format: format.combine(
+        format.json()
+    ),
+    defaultMeta: { service: 'product' },
     transports: [
         new transports.Console()
     ]
 })
+
+export class InfoLogger {
+    static async log(message) {
+        Logger.log({
+            level: 'info',
+            message: {
+                timestamp: Formatter.formatDate2Timestamp(new Date()),
+                message: message
+            }
+        });
+    }
+}
+
+export class HttpLogger{
+    static async log(req) {
+        Logger.log({
+            level: 'info',
+            request: 'asdf'
+        })
+    }
+}
 
 export class ErrorLogger{
     constructor(){}
 
     async error(err){
         console.log("=================START ERROR LOGGER=================");
-        LogError.log({
+        Logger.log({
             level: 'error',
             message: {
                 timestamp: new Date(),

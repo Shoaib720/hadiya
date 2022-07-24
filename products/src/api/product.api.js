@@ -1,4 +1,5 @@
 import { ProductService } from '../services/index.js';
+import { InfoLogger } from '../utils/logger.js';
 
 const SuccessCode = {
     'OK': 200,
@@ -17,6 +18,8 @@ export async function ProductAPI (app, producer) {
                 currency: req.body.currency
             }
             await productService.AddProduct(productData);
+            const info = `${new Date()} Request id: ${req.id}. POST /products ${SuccessCode.CREATED} Product added successfully`;
+            await InfoLogger.log(info);
             res.status(SuccessCode.CREATED).send({
                 message: "Product added successfully"
             })
@@ -33,13 +36,22 @@ export async function ProductAPI (app, producer) {
 
             if(req.query.id){
                 const product = await productService.GetProductById(req.query.id);
+                const info = `${new Date()} Request id: ${req.id}. GET /products ${SuccessCode.OK} Product with id ${req.query.id} fetched successfully`;
+                await InfoLogger.log(info);
                 res.status(SuccessCode.OK).json({
                     message: "Success",
                     data: product
                 });
             }
             else{
-                const products = await productService.GetProducts();
+                let pagination = {};
+                if(req.query.limit && req.query.offset){
+                    pagination.limit = +req.query.limit;
+                    pagination.offset = +req.query.offset
+                }
+                const products = await productService.GetProducts(pagination);
+                const info = `${new Date()} Request id: ${req.id}. GET /products ${SuccessCode.OK} Products fetched successfully`;
+                InfoLogger.log(info);
                 res.status(SuccessCode.OK).json({
                     message: "Success",
                     data: products
@@ -60,6 +72,8 @@ export async function ProductAPI (app, producer) {
                 currency: req.body.currency
             }
             await productService.UpdateProduct(data);
+            const info = `${new Date()} Request id: ${req.id}. PUT /products ${SuccessCode.OK} Product with id ${req.query.id} updated successfully`;
+            await InfoLogger.log(info);
             res.status(SuccessCode.OK).json({
                 message: "Record updated successfully"
             });
@@ -72,6 +86,8 @@ export async function ProductAPI (app, producer) {
     app.delete('/products', async (req, res, next) => {
         try{
             await productService.DeleteProduct(req.query.id);
+            const info = `${new Date()} Request id: ${req.id}. DEL /products ${SuccessCode.OK} Product with id ${req.query.id} deleted successfully`;
+            await InfoLogger.log(info);
             res.status(SuccessCode.OK).json({
                 message: "Record deleted successfully"
             })
@@ -89,6 +105,8 @@ export async function ProductAPI (app, producer) {
                 quantity: req.body.quantity
             }
             await productService.AddToCart(payload);
+            const info = `${new Date()} Request id: ${req.id}. POST /products/add_to_cart ${SuccessCode.OK} Product payload sent to queue successfully`;
+            await InfoLogger.log(info);
             res.status(SuccessCode.OK).json(payload);
         }
         catch(err) {

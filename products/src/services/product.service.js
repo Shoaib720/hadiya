@@ -25,8 +25,8 @@ export class ProductService {
         await this.repository.insertProduct({ name, price, currency });
     }
 
-    async GetProducts () {
-        return await this.repository.fetchAllProducts();
+    async GetProducts (pagination) {
+        return await this.repository.fetchAllProducts(pagination);
     }
 
     async GetProductById (id) {

@@ -7,11 +7,6 @@ import { ErrorLogger } from './utils/logger.js';
 
 async function StartServer() {
 
-  process.on('uncaughtException', (error) => {
-    console.error(error);
-    process.exit(1);
-  })
-
   try{
     const app = express();
 

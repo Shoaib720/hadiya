@@ -1,8 +1,11 @@
 import express from 'express';
+import requestId from 'express-request-id';
 import { ProductAPI } from './api/index.js'
 import { LogHandler, ErrorHandler } from './middlewares/index.js';
 
 export function expressApp(app, producer) {
+
+  app.use(requestId());
   
   app.use(express.json());
 

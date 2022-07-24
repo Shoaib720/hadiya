@@ -12,8 +12,14 @@ export class ProductRepository {
         await Product.create(productData);
     }
       
-    async fetchAllProducts () {
-        const products = await Product.findAll();
+    async fetchAllProducts (pagination) {
+        let limit = 10;
+        let offset = 0;
+        if(pagination && pagination.limit && pagination.offset){
+            limit = pagination.limit;
+            offset = pagination.offset;
+        }
+        const products = await Product.findAll({ offset: offset, limit: limit });
         if(!products || products.length === 0){
             throw new API404Error('Products not found!');
         }

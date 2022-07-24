@@ -13,7 +13,7 @@ export const Product = sequelize.define('Product', {
     allowNull: false,
   },
   price: {
-    type: DataTypes.DECIMAL(5),
+    type: DataTypes.DECIMAL(10,2),
     allowNull: false
   },
   currency: {
