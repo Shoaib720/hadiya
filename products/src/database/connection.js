@@ -7,4 +7,4 @@ export const sequelize = new Sequelize(DB_CONNECTION_STRING, {
 
 export const esClient = new Client({
     node: ELASTICSEARCH_URL
-})
+});

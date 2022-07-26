@@ -1,0 +1,1 @@
+export { ESRepository } from './elasticsearch.repository.js';

@@ -1,6 +1,6 @@
-import { ESRepository } from '../database/repositories/elasticsearch.repository.js';
+import { ESRepository } from '../repositories/index.js';
 
-export class ESService {
+export class CatalogueService {
 
     constructor(client) {
         this.repository = new ESRepository(client);

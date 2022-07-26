@@ -4,6 +4,12 @@ docker run -dit --name kafka -p 9092:9092 -v hadiya_kafka_data:/bitnami/kafka --
 
 docker run -dit --name hadiya_elasticsearch -p 9200:9200 -p 9300:9300 --network hadiya_net --network-alias elasticsearch -v hadiya_elasticsearch_data:/bitnami/elasticsearch/data bitnami/elasticsearch:8
 
+docker run -dit --name hadiya_products -p 3001:3001 -u node -w /app/products -v $(pwd):/app/products --network hadiya_net --network-alias products node:16-alpine
+
+docker run -dit --name hadiya_carts -p 3002:3002 -u node -w /app/carts -v $(pwd):/app/carts --network hadiya_net --network-alias carts node:16-alpine
+
+docker run -dit --name hadiya_catalogue -p 3003:3003 -u node -w /app/catalogue -v $(pwd):/app/catalogue --network hadiya_net --network-alias catalogue node:16-alpine
+
 docker run -dit --name hadiya_kibana -p 5601:5601 --network hadiya_net --network-alias kibana -v hadiya_kibana_data:/bitnami/kibana bitnami/kibana:8
 
 az servicebus namespace create --resource-group rg-hadiya-service-bus --name hadiya --location centralindia

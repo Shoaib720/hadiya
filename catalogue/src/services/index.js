@@ -1,0 +1,1 @@
+export { CatalogueService } from './catalogue.service.js';
