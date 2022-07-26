@@ -2,7 +2,7 @@ import express from 'express';
 import { ServiceBusClient } from '@azure/service-bus';
 import { expressApp } from './express-app.js'
 import { PORT, SERVICE_BUS_CONNECTION_STRING, SERVICE_BUS_QUEUE_NAME } from './config/index.js';
-import { sequelize } from './database/index.js'
+import { sequelize, esClient } from './database/index.js'
 import { ErrorLogger } from './utils/logger.js';
 
 async function StartServer() {
@@ -17,7 +17,7 @@ async function StartServer() {
       alter: false
     });
 
-    expressApp(app, producer);
+    expressApp({ app, producer, esClient });
 
     app.listen(PORT, () => {
       console.log(`Server is listening on ${PORT}`);

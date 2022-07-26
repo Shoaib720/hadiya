@@ -1,4 +1,4 @@
-import { ProductService } from '../services/index.js';
+import { ProductService, ESService } from '../services/index.js';
 import { InfoLogger } from '../utils/logger.js';
 
 const SuccessCode = {
@@ -6,9 +6,11 @@ const SuccessCode = {
     'CREATED': 201
 }
 
-export async function ProductAPI (app, producer) {
+export async function ProductAPI (app, producer, esClient) {
 
     const productService = new ProductService(producer);
+    const esService = new ESService(esClient);
+
 
     app.post('/products', async (req, res, next) => {
         try{
@@ -17,7 +19,8 @@ export async function ProductAPI (app, producer) {
                 price: req.body.price,
                 currency: req.body.currency
             }
-            await productService.AddProduct(productData);
+            // await productService.AddProduct(productData);
+            await esService.AddProduct(productData);
             const info = `${new Date()} Request id: ${req.id}. POST /products ${SuccessCode.CREATED} Product added successfully`;
             await InfoLogger.log(info);
             res.status(SuccessCode.CREATED).send({
