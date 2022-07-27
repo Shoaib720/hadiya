@@ -3,7 +3,7 @@ import requestId from 'express-request-id';
 import { ProductAPI } from './api/index.js'
 import { LogHandler, ErrorHandler } from './middlewares/index.js';
 
-export function expressApp({ app, producer, esClient }) {
+export function expressApp({ app, producer, esClient, register }) {
 
   app.use(requestId());
   
@@ -14,6 +14,11 @@ export function expressApp({ app, producer, esClient }) {
       message: 'Products service is up and running'
     });
   });
+
+  app.get('/metrics', async (req, res, next) => {
+    res.setHeader('Content-Type', register.contentType);
+    res.send(await register.metrics());
+  })
 
   ProductAPI(app, producer, esClient);
 
