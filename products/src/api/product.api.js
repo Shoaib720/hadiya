@@ -19,7 +19,7 @@ export async function ProductAPI (app, producer, esClient) {
                 price: req.body.price,
                 currency: req.body.currency
             }
-            // await productService.AddProduct(productData);
+            await productService.AddProduct(productData);
             await esService.AddProduct(productData);
             const info = `${new Date()} Request id: ${req.id}. POST /products ${SuccessCode.CREATED} Product added successfully`;
             await InfoLogger.log(info);
