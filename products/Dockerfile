@@ -5,4 +5,4 @@ RUN npm install --location=global nodemon --save-dev
 RUN npm install
 COPY . .
 EXPOSE 3001
-CMD ["node", "index.js"]
+CMD ["node", "src/index.js"]

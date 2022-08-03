@@ -1,0 +1,46 @@
+version: '3.9'
+services:
+  products:
+    build: ./
+    ports:
+      - '3001:3001'
+    environment:
+      PORT: 3001
+      DB_CONNECTION_STRING: mysql://shoaib:Shoaib123@mysql:3306/products
+      SERVICE_BUS_CONNECTION_STRING: Endpoint=sb://hadiya.servicebus.windows.net/;SharedAccessKeyName=sendlisten;SharedAccessKey=k5YwVx03r1ofjQL95U0Bd8FwNkkROyLS+ryfLjRVtG0=;EntityPath=product_cart
+      SERVICE_BUS_QUEUE_NAME: product_cart
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    depends_on: [ mysql, elasticsearch ]
+    networks:
+      - hadiya_net
+  mysql:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: Administrator123
+      MYSQL_DATABASE: products
+      MYSQL_USER: shoaib
+      MYSQL_PASSWORD: Shoaib123
+    volumes:
+      - 'mysql_data:/var/lib/mysql'
+    networks:
+      - hadiya_net
+  elasticsearch:
+    image: docker.io/bitnami/elasticsearch:8
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    volumes:
+      - 'hadiya_elasticsearch_data:/bitnami/elasticsearch/data'
+    networks:
+      - hadiya_net
+
+volumes:
+  mysql_data:
+    driver: local
+  hadiya_elasticsearch_data:
+    driver: local
+networks:
+  hadiya_net:
+    driver: bridge
