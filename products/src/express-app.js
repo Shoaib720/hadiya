@@ -15,6 +15,10 @@ export function expressApp({ app, producer, esClient, register }) {
     });
   });
 
+  app.get('/health', (_req, res, _next) => {
+    res.status(200).send('Service is healthy!');
+  })
+
   app.get('/metrics', async (req, res, next) => {
     res.setHeader('Content-Type', register.contentType);
     res.send(await register.metrics());
