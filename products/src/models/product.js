@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../index.js'
+import { Connection } from '../config/index.js'
 
-export const Product = sequelize.define('Product', {
+export const Product = Connection.sequelize.define('Product', {
   id: {
     type: DataTypes.UUID,
     unique: true,

@@ -1,4 +1,4 @@
-import { ProductRepository } from '../database/index.js'
+import { ProductRepository } from '../repositories/index.js'
 import { QueueService } from './queue.service.js';
 import { API400Error } from '../utils/errors/index.js';
 

@@ -1,15 +1,25 @@
 import { createLogger, transports, format } from 'winston';
+//import { LogstashTransport } from 'winston-logstash-transport';
+import WinstonLogStash from 'winston3-logstash-transport';
+import ecsFormat from '@elastic/ecs-winston-format';
 import { AppError } from './errors/app.error.js';
 import { Formatter } from './formatter.js';
 
 export const Logger = createLogger({
     level: 'info',
-    format: format.combine(
-        format.json()
-    ),
+    format: ecsFormat(),
     defaultMeta: { service: 'product' },
     transports: [
-        new transports.Console()
+        new transports.Console(),
+        new WinstonLogStash({
+  	    mode: 'tcp',
+            host: '10.0.62.49',
+            port: 8000
+        }),
+        //new LogstashTransport({
+        //    host: '10.0.61.220',
+        //    port: 8000
+        //})
     ]
 })
 
@@ -17,10 +27,7 @@ export class InfoLogger {
     static async log(message) {
         Logger.log({
             level: 'info',
-            message: {
-                timestamp: Formatter.formatDate2Timestamp(new Date()),
-                message: message
-            }
+            message: JSON.stringify(message)
         });
     }
 }

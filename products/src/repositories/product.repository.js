@@ -1,5 +1,5 @@
 import { v4, validate, version } from 'uuid';
-import { API400Error, API404Error } from '../../utils/errors/index.js';
+import { API400Error, API404Error } from '../utils/errors/index.js';
 import { Product } from '../models/product.js';
 
 export class ProductRepository {
@@ -21,7 +21,8 @@ export class ProductRepository {
         }
         const products = await Product.findAll({ offset: offset, limit: limit });
         if(!products || products.length === 0){
-            throw new API404Error('Products not found!');
+            // throw new API404Error('Products not found!');
+            return {}
         }
         return products;
     }
