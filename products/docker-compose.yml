@@ -35,11 +35,74 @@ services:
       - 'hadiya_elasticsearch_data:/bitnami/elasticsearch/data'
     networks:
       - hadiya_net
+  kibana:
+    image: docker.io/bitnami/kibana:8
+    ports:
+      - '5601:5601'
+    volumes:
+      - 'hadiya_kibana_data:/bitnami/kibana'
+    depends_on:
+      - elasticsearch
+    networks:
+      - hadiya_net
+  postgresql:
+    image: docker.io/bitnami/postgresql:13
+    volumes:
+      - 'hadiya_sonar_postgresql_data:/bitnami/postgresql'
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+      - POSTGRESQL_USERNAME=bn_sonarqube
+      - POSTGRESQL_DATABASE=bitnami_sonarqube
+    networks:
+      - hadiya_net
+  sonarqube:
+    image: docker.io/bitnami/sonarqube:9
+    ports:
+      - '80:9000'
+    volumes:
+      - 'hadiya_sonarqube_data:/bitnami/sonarqube'
+    depends_on:
+      - postgresql
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+      - SONARQUBE_DATABASE_HOST=postgresql
+      - SONARQUBE_DATABASE_PORT_NUMBER=5432
+      - SONARQUBE_DATABASE_USER=bn_sonarqube
+      - SONARQUBE_DATABASE_NAME=bitnami_sonarqube
+    networks:
+      - hadiya_net
+  prometheus:
+    image: bitnami/prometheus:latest
+    ports:
+      - '9090:9090'
+    volumes:
+      - 'hadiya_prometheus_data:/opt/bitnami/prometheus/data'
+      - './prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml'
+    networks:
+      - hadiya_net
+  grafana:
+    image: grafana/grafana
+    depends_on:
+      - prometheus
+    ports:
+      - '3000:3000'
+    networks:
+      - hadiya_net
 
 volumes:
   mysql_data:
     driver: local
   hadiya_elasticsearch_data:
+    driver: local
+  hadiya_kibana_data:
+    driver: local
+  hadiya_sonar_postgresql_data:
+    driver: local
+  hadiya_sonarqube_data:
+    driver: local
+  hadiya_prometheus_data:
     driver: local
 networks:
   hadiya_net:
