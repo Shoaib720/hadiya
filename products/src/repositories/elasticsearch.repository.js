@@ -1,5 +1,5 @@
 import { v4, validate, version } from 'uuid';
-import { Formatter } from '../../utils/index.js';
+import { Formatter } from '../utils/index.js';
 
 export class ESRepository {
 
