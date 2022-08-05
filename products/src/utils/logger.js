@@ -7,7 +7,9 @@ import { Formatter } from './formatter.js';
 
 export const Logger = createLogger({
     level: 'info',
-    format: ecsFormat(),
+    format: [
+        format.json()
+    ],
     defaultMeta: { service: 'product' },
     transports: [
         new transports.Console(),
