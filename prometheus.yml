@@ -5,10 +5,10 @@ global:
 
 scrape_configs:
   - job_name: products
-    metrics_path: /products/metrics
+    metrics_path: /metrics
     static_configs:
       - targets:
-          - "http://products:3001"
+          - "products:3001/products"
         labels:
           project: hadiya
           app: products
